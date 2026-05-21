@@ -131,11 +131,12 @@ jobs:
       - name: Deploy
         id: deploy
         if: success() && inputs.deployment == true && inputs.environment != ''
-        run: npm run deploy -- --dry-run ${{ inputs.dry-run }}
         env:
+          DRY_RUN: ${{ inputs.dry-run }}
           DEPLOYMENT_VERSION: ${{ format('deploy-{0}@{1}.{2}.{3}', inputs.environment, github.run_id, github.run_number, github.run_attempt) }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npm run deploy -- --dry-run $DRY_RUN
 
       - name: Store deployment bundle
         if: always() && steps.deploy.outcome == 'success'
